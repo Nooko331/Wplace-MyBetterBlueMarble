@@ -234,15 +234,37 @@ export default class Template {
                 imageData.data[pixelIndex + 2] = 255;
               }
               imageData.data[pixelIndex + 3] = 32; // Make it translucent
-            } else if (x % shreadSize !== 1 && y % shreadSize !== 1) { // Otherwise only draw the middle pixel and cross
-              imageData.data[pixelIndex + 3] = 0; // Make the pixel transparent on the alpha channel
             } else {
-              // Center pixel: keep only if in allowed site palette
-              const r = imageData.data[pixelIndex];
-              const g = imageData.data[pixelIndex + 1];
-              const b = imageData.data[pixelIndex + 2];
-              if (!this.allowedColorsSet.has(`${r},${g},${b}`)) {
-                //imageData.data[pixelIndex + 3] = 0; // hide non-palette colors
+              const pattern = (typeof RENDER_PATTERN !== 'undefined') ? RENDER_PATTERN : 'cross';
+              let shouldMask = false;
+
+              if (pattern === 'checkerboard') {
+                const globalX = pixelX + Math.floor(x / shreadSize);
+                const globalY = pixelY + Math.floor(y / shreadSize);
+                const isHorizontal = (globalX + globalY) % 2 === 0;
+
+                if (isHorizontal) {
+                  // Horizontal: only keep middle row
+                  if (y % shreadSize !== 1) shouldMask = true;
+                } else {
+                  // Vertical: only keep middle column
+                  if (x % shreadSize !== 1) shouldMask = true;
+                }
+              } else {
+                // Default Cross: keep middle row OR middle column
+                if (x % shreadSize !== 1 && y % shreadSize !== 1) shouldMask = true;
+              }
+
+              if (shouldMask) {
+                imageData.data[pixelIndex + 3] = 0; // Make the pixel transparent on the alpha channel
+              } else {
+                // Center pixel: keep only if in allowed site palette
+                const r = imageData.data[pixelIndex];
+                const g = imageData.data[pixelIndex + 1];
+                const b = imageData.data[pixelIndex + 2];
+                // if (!this.allowedColorsSet.has(`${r},${g},${b}`)) {
+                //   imageData.data[pixelIndex + 3] = 0; // hide non-palette colors
+                // }
               }
             }
           }

@@ -53,90 +53,105 @@ const cssFiles = fs.readdirSync('src/')
   .filter(file => file.endsWith('.css'))
   .map(file => `src/${file}`);
 
-// Compiles the CSS files
-esbuild.build({
-  entryPoints: cssFiles,
-  bundle: true,
-  outfile: 'dist/BlueMarble.user.css',
-  minify: true
-});
+const builds = [
+  { name: 'Default', pattern: 'cross', outDir: 'dist' },
+  { name: 'Checkerboard', pattern: 'checkerboard', outDir: 'dist-checkerboard' }
+];
 
-// Compiles the JS files
-const resultEsbuild = await esbuild.build({
-  entryPoints: ['src/main.js'], // "Infect" the files from this point (it spreads from this "patient 0")
-  bundle: true, // Should the code be bundled?
-  outfile: 'dist/BlueMarble.user.js', // The file the bundled code is exported to
-  format: 'iife', // What format the bundler bundles the code into
-  target: 'es2020', // What is the minimum version/year that should be supported? When omited, it attempts to support backwards compatability with legacy browsers
-  platform: 'browser', // The platform the bundled code will be operating on
-  legalComments: 'inline', // What level of legal comments are preserved? (Hard: none, Soft: inline)
-  minify: false, // Should the code be minified?
-  write: false, // Should we write the outfile to the disk?
-}).catch(() => process.exit(1));
+for (const build of builds) {
+  console.log(`${consoleStyle.BLUE}Building ${build.name} version...${consoleStyle.RESET}`);
 
-// Retrieves the JS file
-const resultEsbuildJS = resultEsbuild.outputFiles.find(file => file.path.endsWith('.js'));
+  // Ensure output directory exists
+  if (!fs.existsSync(build.outDir)) {
+    fs.mkdirSync(build.outDir, { recursive: true });
+  }
 
-// Obfuscates the JS file
-let resultTerser = await terser.minify(resultEsbuildJS.text, {
-  mangle: {
-    //toplevel: true, // Obfuscate top-level class/function names
-    keep_classnames: false, // Should class names be preserved?
-    keep_fnames: false, // Should function names be preserved?
-    reserved: [], // List of keywords to preserve
-    properties: {
-      // regex: /.*/, // Yes, I am aware I should be using a RegEx. Yes, like you, I am also suprised the userscript still functions
-      keep_quoted: true, // Should names in quotes be preserved?
-      reserved: [] // What properties should be preserved?
+  // Compiles the CSS files
+  await esbuild.build({
+    entryPoints: cssFiles,
+    bundle: true,
+    outfile: `${build.outDir}/BlueMarble.user.css`,
+    minify: true
+  });
+
+  // Compiles the JS files
+  const resultEsbuild = await esbuild.build({
+    entryPoints: ['src/main.js'], // "Infect" the files from this point (it spreads from this "patient 0")
+    bundle: true, // Should the code be bundled?
+    outfile: `${build.outDir}/BlueMarble.user.js`, // The file the bundled code is exported to
+    format: 'iife', // What format the bundler bundles the code into
+    target: 'es2020', // What is the minimum version/year that should be supported? When omited, it attempts to support backwards compatability with legacy browsers
+    platform: 'browser', // The platform the bundled code will be operating on
+    legalComments: 'inline', // What level of legal comments are preserved? (Hard: none, Soft: inline)
+    minify: false, // Should the code be minified?
+    write: false, // Should we write the outfile to the disk?
+    define: { 'RENDER_PATTERN': `"${build.pattern}"` }
+  }).catch(() => process.exit(1));
+
+  // Retrieves the JS file
+  const resultEsbuildJS = resultEsbuild.outputFiles.find(file => file.path.endsWith('.js'));
+
+  // Obfuscates the JS file
+  let resultTerser = await terser.minify(resultEsbuildJS.text, {
+    mangle: {
+      //toplevel: true, // Obfuscate top-level class/function names
+      keep_classnames: false, // Should class names be preserved?
+      keep_fnames: false, // Should function names be preserved?
+      reserved: [], // List of keywords to preserve
+      properties: {
+        // regex: /.*/, // Yes, I am aware I should be using a RegEx. Yes, like you, I am also suprised the userscript still functions
+        keep_quoted: true, // Should names in quotes be preserved?
+        reserved: [] // What properties should be preserved?
+      },
     },
-  },
-  format: {
-    comments: 'some' // Save legal comments
-  },
-  compress: {
-    dead_code: isGitHub, // Should unreachable code be removed?
-    drop_console: isGitHub, // Should console code be removed?
-    drop_debugger: isGitHub, // SHould debugger code be removed?
-    passes: 2 // How many times terser will compress the code
+    format: {
+      comments: 'some' // Save legal comments
+    },
+    compress: {
+      dead_code: isGitHub, // Should unreachable code be removed?
+      drop_console: isGitHub, // Should console code be removed?
+      drop_debugger: isGitHub, // SHould debugger code be removed?
+      passes: 2 // How many times terser will compress the code
+    }
+  });
+
+  // Writes the obfuscated/mangled JS code to a file
+  fs.writeFileSync(`${build.outDir}/BlueMarble.user.js`, resultTerser.code, 'utf8');
+
+  let importedMapCSS = {}; // The imported CSS map
+
+  // Only import a CSS map if we are NOT in production (GitHub Workflow)
+  // Theoretically, if the previous map is always imported, the names would not scramble. However, the names would never decrease in number...
+  if (!isGitHub) {
+    try {
+      importedMapCSS = JSON.parse(fs.readFileSync(`${build.outDir}/BlueMarble.user.css.map.json`, 'utf8'));
+    } catch {
+      console.log(`${consoleStyle.YELLOW}Warning! Could not find a CSS map to import for ${build.name}. A 100% new CSS map will be generated...${consoleStyle.RESET}`);
+    }
   }
-});
 
-// Writes the obfuscated/mangled JS code to a file
-fs.writeFileSync('dist/BlueMarble.user.js', resultTerser.code, 'utf8');
+  // Mangles the CSS selectors
+  // If we are in production (GitHub Workflow), then generate the CSS mapping
+  const mapCSS = mangleSelectors({
+    inputPrefix: 'bm-',
+    outputPrefix: 'bm-',
+    pathJS: `${build.outDir}/BlueMarble.user.js`,
+    pathCSS: `${build.outDir}/BlueMarble.user.css`,
+    importMap: importedMapCSS,
+    returnMap: isGitHub
+  });
 
-let importedMapCSS = {}; // The imported CSS map
-
-// Only import a CSS map if we are NOT in production (GitHub Workflow)
-// Theoretically, if the previous map is always imported, the names would not scramble. However, the names would never decrease in number...
-if (!isGitHub) {
-  try {
-    importedMapCSS = JSON.parse(fs.readFileSync('dist/BlueMarble.user.css.map.json', 'utf8'));
-  } catch {
-    console.log(`${consoleStyle.YELLOW}Warning! Could not find a CSS map to import. A 100% new CSS map will be generated...${consoleStyle.RESET}`);
+  // If a map was returned, write it to the file
+  if (mapCSS) {
+    fs.writeFileSync(`${build.outDir}/BlueMarble.user.css.map.json`, JSON.stringify(mapCSS, null, 2));
   }
+
+  // Adds the banner
+  fs.writeFileSync(
+    `${build.outDir}/BlueMarble.user.js`, 
+    metaContent + fs.readFileSync(`${build.outDir}/BlueMarble.user.js`, 'utf8'), 
+    'utf8'
+  );
 }
-
-// Mangles the CSS selectors
-// If we are in production (GitHub Workflow), then generate the CSS mapping
-const mapCSS = mangleSelectors({
-  inputPrefix: 'bm-',
-  outputPrefix: 'bm-',
-  pathJS: 'dist/BlueMarble.user.js',
-  pathCSS: 'dist/BlueMarble.user.css',
-  importMap: importedMapCSS,
-  returnMap: isGitHub
-});
-
-// If a map was returned, write it to the file
-if (mapCSS) {
-  fs.writeFileSync('dist/BlueMarble.user.css.map.json', JSON.stringify(mapCSS, null, 2));
-}
-
-// Adds the banner
-fs.writeFileSync(
-  'dist/BlueMarble.user.js', 
-  metaContent + fs.readFileSync('dist/BlueMarble.user.js', 'utf8'), 
-  'utf8'
-);
 
 console.log(`${consoleStyle.GREEN + consoleStyle.BOLD + consoleStyle.UNDERLINE}Building complete!${consoleStyle.RESET}`);
