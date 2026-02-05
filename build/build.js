@@ -54,8 +54,20 @@ const cssFiles = fs.readdirSync('src/')
   .map(file => `src/${file}`);
 
 const builds = [
-  { name: 'Default', pattern: 'cross', outDir: 'dist' },
-  { name: 'Checkerboard', pattern: 'checkerboard', outDir: 'dist-checkerboard' }
+  { 
+    name: 'Default', 
+    pattern: 'cross', 
+    outDir: 'dist',
+    jsName: 'BlueMarble.user.js',
+    cssName: 'BlueMarble.user.css'
+  },
+  { 
+    name: 'Checkerboard', 
+    pattern: 'checkerboard', 
+    outDir: 'dist-checkerboard',
+    jsName: 'BlueMarble-Checkerboard.user.js',
+    cssName: 'BlueMarble-Checkerboard.user.css'
+  }
 ];
 
 for (const build of builds) {
@@ -70,7 +82,7 @@ for (const build of builds) {
   await esbuild.build({
     entryPoints: cssFiles,
     bundle: true,
-    outfile: `${build.outDir}/BlueMarble.user.css`,
+    outfile: `${build.outDir}/${build.cssName}`,
     minify: true
   });
 
@@ -78,7 +90,7 @@ for (const build of builds) {
   const resultEsbuild = await esbuild.build({
     entryPoints: ['src/main.js'], // "Infect" the files from this point (it spreads from this "patient 0")
     bundle: true, // Should the code be bundled?
-    outfile: `${build.outDir}/BlueMarble.user.js`, // The file the bundled code is exported to
+    outfile: `${build.outDir}/${build.jsName}`, // The file the bundled code is exported to
     format: 'iife', // What format the bundler bundles the code into
     target: 'es2020', // What is the minimum version/year that should be supported? When omited, it attempts to support backwards compatability with legacy browsers
     platform: 'browser', // The platform the bundled code will be operating on
@@ -116,7 +128,7 @@ for (const build of builds) {
   });
 
   // Writes the obfuscated/mangled JS code to a file
-  fs.writeFileSync(`${build.outDir}/BlueMarble.user.js`, resultTerser.code, 'utf8');
+  fs.writeFileSync(`${build.outDir}/${build.jsName}`, resultTerser.code, 'utf8');
 
   let importedMapCSS = {}; // The imported CSS map
 
@@ -124,7 +136,7 @@ for (const build of builds) {
   // Theoretically, if the previous map is always imported, the names would not scramble. However, the names would never decrease in number...
   if (!isGitHub) {
     try {
-      importedMapCSS = JSON.parse(fs.readFileSync(`${build.outDir}/BlueMarble.user.css.map.json`, 'utf8'));
+      importedMapCSS = JSON.parse(fs.readFileSync(`${build.outDir}/${build.cssName}.map.json`, 'utf8'));
     } catch {
       console.log(`${consoleStyle.YELLOW}Warning! Could not find a CSS map to import for ${build.name}. A 100% new CSS map will be generated...${consoleStyle.RESET}`);
     }
@@ -135,21 +147,53 @@ for (const build of builds) {
   const mapCSS = mangleSelectors({
     inputPrefix: 'bm-',
     outputPrefix: 'bm-',
-    pathJS: `${build.outDir}/BlueMarble.user.js`,
-    pathCSS: `${build.outDir}/BlueMarble.user.css`,
+    pathJS: `${build.outDir}/${build.jsName}`,
+    pathCSS: `${build.outDir}/${build.cssName}`,
     importMap: importedMapCSS,
     returnMap: isGitHub
   });
 
   // If a map was returned, write it to the file
   if (mapCSS) {
-    fs.writeFileSync(`${build.outDir}/BlueMarble.user.css.map.json`, JSON.stringify(mapCSS, null, 2));
+    fs.writeFileSync(`${build.outDir}/${build.cssName}.map.json`, JSON.stringify(mapCSS, null, 2));
+  }
+
+  // --- EMBED CSS INTO JS ---
+  // Read the final mangled CSS
+  const cssContent = fs.readFileSync(`${build.outDir}/${build.cssName}`, 'utf8');
+  
+  // Read the obfuscated JS
+  let jsContent = fs.readFileSync(`${build.outDir}/${build.jsName}`, 'utf8');
+
+  // Replace GM_getResourceText("CSS-BM-File") with the actual CSS string
+  // We use JSON.stringify to safely quote and escape the CSS string
+  jsContent = jsContent.replace(/GM_getResourceText\s*\(\s*["']CSS-BM-File["']\s*\)/g, JSON.stringify(cssContent));
+  
+  fs.writeFileSync(`${build.outDir}/${build.jsName}`, jsContent, 'utf8');
+
+  // Prepare metadata
+  let currentMeta = metaContent;
+  
+  // Remove @resource CSS-BM-File since we embedded it
+  currentMeta = currentMeta.replace(/^\/\/\s*@resource\s+CSS-BM-File\s+.*(\r\n|\n|\r)/gm, '');
+
+  if (build.name !== 'Default') {
+    // Modify name
+    currentMeta = currentMeta.replace('// @name         Blue Marble', `// @name         Blue Marble (${build.name})`);
+    
+    // Modify URLs to point to the correct files
+    // Replacing dist/BlueMarble.user.js with dist-checkerboard/BlueMarble-Checkerboard.user.js (etc)
+    const newJsPath = `${build.outDir}/${build.jsName}`;
+    const newCssPath = `${build.outDir}/${build.cssName}`;
+    
+    currentMeta = currentMeta.replace(/dist\/BlueMarble\.user\.js/g, newJsPath);
+    currentMeta = currentMeta.replace(/dist\/BlueMarble\.user\.css/g, newCssPath);
   }
 
   // Adds the banner
   fs.writeFileSync(
-    `${build.outDir}/BlueMarble.user.js`, 
-    metaContent + fs.readFileSync(`${build.outDir}/BlueMarble.user.js`, 'utf8'), 
+    `${build.outDir}/${build.jsName}`, 
+    currentMeta + fs.readFileSync(`${build.outDir}/${build.jsName}`, 'utf8'), 
     'utf8'
   );
 }
