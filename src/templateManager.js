@@ -110,7 +110,7 @@ export default class TemplateManager {
    */
   async createJSON() {
     return {
-      "whoami": this.name.replace(' ', ''), // Name of userscript without spaces
+      "whoami": "BlueMarble", // Hardcoded to ensure compatibility across versions
       "scriptVersion": this.version, // Version of userscript
       "schemaVersion": this.templatesVersion, // Version of JSON schema
       "templates": {} // The templates
@@ -536,7 +536,9 @@ export default class TemplateManager {
     console.log(json);
 
     // If the passed in JSON is a Blue Marble template object...
-    if (json?.whoami == 'BlueMarble') {
+    // Check if whoami starts with "BlueMarble" to support both "BlueMarble" and "BlueMarble(Checkerboard)"
+    if (json?.whoami?.startsWith('BlueMarble')) {
+      this.templatesJSON = json; // Keep the parsed JSON in memory so subsequent saves (createTemplate) don't wipe it
       this.#parseBlueMarble(json); // ...parse the template object as Blue Marble
     }
   }
@@ -573,6 +575,14 @@ export default class TemplateManager {
           let requiredPixelCount = 0; // Global required pixel count for this imported template
           const paletteMap = new Map(); // Accumulates color counts across tiles (center pixels only)
 
+          // Creates a new Template class instance
+          const template = new Template({
+            displayName: displayName,
+            sortID: sortID || this.templatesArray?.length || 0,
+            authorID: authorID || '',
+            //coords: coords
+          });
+
           for (const tile in tilesbase64) {
             console.log(tile);
             if (tilesbase64.hasOwnProperty(tile)) {
@@ -605,7 +615,7 @@ export default class TemplateManager {
                     if (a < 64) { continue; }
                     if (r === 222 && g === 250 && b === 206) { continue; }
                     requiredPixelCount++;
-                    const key = activeTemplate.allowedColorsSet.has(`${r},${g},${b}`) ? `${r},${g},${b}` : 'other';
+                    const key = template.allowedColorsSet.has(`${r},${g},${b}`) ? `${r},${g},${b}` : 'other';
                     paletteMap.set(key, (paletteMap.get(key) || 0) + 1);
                   }
                 }
@@ -615,13 +625,6 @@ export default class TemplateManager {
             }
           }
 
-          // Creates a new Template class instance
-          const template = new Template({
-            displayName: displayName,
-            sortID: sortID || this.templatesArray?.length || 0,
-            authorID: authorID || '',
-            //coords: coords
-          });
           template.chunked = templateTiles;
           template.requiredPixelCount = requiredPixelCount;
           // Construct colorPalette from paletteMap
