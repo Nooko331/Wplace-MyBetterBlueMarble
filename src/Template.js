@@ -250,10 +250,11 @@ export default class Template {
                   // Vertical: only keep middle column
                   if (x % shreadSize !== 1) shouldMask = true;
                 }
-              } else {
-                // Default Cross: keep middle row OR middle column
+              } else if (pattern === 'cross') {
+                // Cross: keep middle row OR middle column
                 if (x % shreadSize !== 1 && y % shreadSize !== 1) shouldMask = true;
               }
+              // else: original/full - no masking
 
               if (shouldMask) {
                 imageData.data[pixelIndex + 3] = 0; // Make the pixel transparent on the alpha channel

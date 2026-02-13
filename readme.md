@@ -28,13 +28,13 @@
 
 ### release页面直接下载
 
-![image-20260205125818371](readme/image-20260205125818371.png)
+![image-20260213214746646](readme/image-20260213214746646.png)
 
 ### 从仓库中
 
-**十字形版本**放在**dist**文件夹下，将**BlueMarble.user.js**文件拖入到**Tampermonkey**的控制面板安装。
+**十字形版本**放在**dist-cross**文件夹下，将**BlueMarble-Cross.user.js**文件拖入到**Tampermonkey**的控制面板安装。
 
-![image-20251227164305383](readme/image-20251227164305383.png)
+![image-20260213214625523](readme/image-20260213214625523.png)
 
 **横竖交错版本**放在**dist-checkerboard**文件夹下，将**BlueMarble-Checkerboard.user.js**文件拖入到**Tampermonkey**的控制面板安装。
 

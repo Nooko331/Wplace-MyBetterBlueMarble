@@ -55,8 +55,8 @@ const cssFiles = fs.readdirSync('src/')
 
 const builds = [
   { 
-    name: 'Default', 
-    pattern: 'cross', 
+    name: 'Original', 
+    pattern: 'original', 
     outDir: 'dist',
     jsName: 'BlueMarble.user.js',
     cssName: 'BlueMarble.user.css'
@@ -67,6 +67,13 @@ const builds = [
     outDir: 'dist-checkerboard',
     jsName: 'BlueMarble-Checkerboard.user.js',
     cssName: 'BlueMarble-Checkerboard.user.css'
+  },
+  { 
+    name: 'Cross', 
+    pattern: 'cross', 
+    outDir: 'dist-cross',
+    jsName: 'BlueMarble-Cross.user.js',
+    cssName: 'BlueMarble-Cross.user.css'
   }
 ];
 
