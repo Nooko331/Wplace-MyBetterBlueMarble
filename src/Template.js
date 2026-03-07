@@ -190,6 +190,62 @@ export default class Template {
 
         const imageData = context.getImageData(0, 0, canvasWidth, canvasHeight); // Data of the image on the canvas
 
+for (let y = 0; y < canvasHeight; y++) {
+          for (let x = 0; x < canvasWidth; x++) {
+            // For every pixel...
+            const pixelIndex = (y * canvasWidth + x) * 4; // Find the pixel index in an array where every 4 indexes are 1 pixel
+            // If the pixel is the color #deface, draw a translucent gray checkerboard pattern
+            if (
+              imageData.data[pixelIndex] === 222 &&
+              imageData.data[pixelIndex + 1] === 250 &&
+              imageData.data[pixelIndex + 2] === 206
+            ) {
+              if ((x + y) % 2 === 0) { // Formula for checkerboard pattern
+                imageData.data[pixelIndex] = 0;
+                imageData.data[pixelIndex + 1] = 0;
+                imageData.data[pixelIndex + 2] = 0;
+              } else {
+                imageData.data[pixelIndex] = 255;
+                imageData.data[pixelIndex + 1] = 255;
+                imageData.data[pixelIndex + 2] = 255;
+              }
+              imageData.data[pixelIndex + 3] = 32; // Make it translucent
+            } else {
+              const pattern = (typeof RENDER_PATTERN !== 'undefined') ? RENDER_PATTERN : 'cross';
+              let shouldMask = false;
+
+              if (pattern === 'checkerboard') {
+                const globalX = pixelX + Math.floor(x / shreadSize);
+                const globalY = pixelY + Math.floor(y / shreadSize);
+                const isHorizontal = (globalX + globalY) % 2 === 0;
+
+                if (isHorizontal) {
+                  // Horizontal: only keep middle row
+                  if (y % shreadSize !== 1) shouldMask = true;
+                } else {
+                  // Vertical: only keep middle column
+                  if (x % shreadSize !== 1) shouldMask = true;
+                }
+              } else if (pattern === 'cross') {
+                // Cross: keep middle row OR middle column
+                if (x % shreadSize !== 1 && y % shreadSize !== 1) shouldMask = true;
+              }
+              // else: original/full - no masking
+
+              if (shouldMask) {
+                imageData.data[pixelIndex + 3] = 0; // Make the pixel transparent on the alpha channel
+              } else {
+                // Center pixel: keep only if in allowed site palette
+                const r = imageData.data[pixelIndex];
+                const g = imageData.data[pixelIndex + 1];
+                const b = imageData.data[pixelIndex + 2];
+                // if (!this.allowedColorsSet.has(`${r},${g},${b}`)) {
+                //   imageData.data[pixelIndex + 3] = 0; // hide non-palette colors
+                // }
+              }
+            }
+          }
+        }
         console.log(`Shreaded pixels for ${pixelX}, ${pixelY}`, imageData);
 
         // Creates the "0000,0000,000,000" key name

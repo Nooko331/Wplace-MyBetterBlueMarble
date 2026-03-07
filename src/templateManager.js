@@ -120,7 +120,7 @@ export default class TemplateManager {
    */
   async createJSON() {
     return {
-      "whoami": this.name.replace(' ', ''), // Name of userscript without spaces
+      "whoami": "BlueMarble", // Hardcoded to ensure compatibility across versions
       "scriptVersion": this.version, // Version of userscript
       "schemaVersion": this.schemaVersion, // Version of JSON schema
       "templates": {} // The templates
