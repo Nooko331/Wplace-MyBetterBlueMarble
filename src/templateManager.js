@@ -117,7 +117,7 @@ export default class TemplateManager {
    */
   async createJSON() {
     return {
-      "whoami": this.name.replace(' ', ''), // Name of userscript without spaces
+      "whoami": "BlueMarble", // Hardcoded to ensure compatibility across versions
       "scriptVersion": this.version, // Version of userscript
       "schemaVersion": this.schemaVersion, // Version of JSON schema
       "templates": {} // The templates
@@ -602,7 +602,9 @@ export default class TemplateManager {
     console.log(json);
 
     // If the passed in JSON is a Blue Marble template object...
-    if (json?.whoami == 'BlueMarble') {
+    // Check if whoami starts with "BlueMarble" to support both "BlueMarble" and "BlueMarble(Checkerboard)"
+    if (json?.whoami?.startsWith('BlueMarble')) {
+      this.templatesJSON = json; // Keep the parsed JSON in memory so subsequent saves (createTemplate) don't wipe it
       this.#parseBlueMarble(json); // ...parse the template object as Blue Marble
     }
   }
