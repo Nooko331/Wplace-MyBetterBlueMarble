@@ -157,7 +157,6 @@ for (const build of builds) {
       console.log(`${consoleStyle.YELLOW}Warning! Could not find a CSS map to import for ${build.name}. A 100% new CSS map will be generated...${consoleStyle.RESET}`);
     }
   }
-  }
 
   // Mangles the CSS selectors
   // If we are in production (GitHub Workflow), then generate the CSS mapping
@@ -194,9 +193,9 @@ for (const build of builds) {
   // Remove @resource CSS-BM-File since we embedded it
   currentMeta = currentMeta.replace(/^\/\/\s*@resource\s+CSS-BM-File\s+.*(\r\n|\n|\r)/gm, '');
 
-  if (build.name !== 'Default') {
+  if (build.name !== 'Original') {
     // Modify name
-    currentMeta = currentMeta.replace('// @name         Blue Marble', `// @name         Blue Marble (${build.name})`);
+    currentMeta = currentMeta.replace('// @name            Blue Marble', `// @name            Blue Marble (${build.name})`);
     
     // Modify URLs to point to the correct files
     // Replacing dist/BlueMarble.user.js with dist-checkerboard/BlueMarble-Checkerboard.user.js (etc)
@@ -214,6 +213,5 @@ for (const build of builds) {
     'utf8'
   );
 }
-
 
 console.log(`${consoleStyle.GREEN + consoleStyle.BOLD + consoleStyle.UNDERLINE}Building complete!${consoleStyle.RESET}`);
