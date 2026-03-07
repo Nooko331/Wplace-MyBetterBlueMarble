@@ -8,8 +8,7 @@
 // @supportURL   https://discord.gg/tpeBPy46hf
 // @homepageURL  https://bluemarble.lol/
 // @icon         https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/0c760b903739e6214f7b8990ffc4089a93e73bd2/dist/assets/Favicon.png
-// @updateURL    https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/main/dist/BlueMarble.user.js
-// @downloadURL  https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/main/dist/BlueMarble.user.js
+
 // @match        https://wplace.live/*
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
