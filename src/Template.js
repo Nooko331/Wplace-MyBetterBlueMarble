@@ -93,12 +93,20 @@ export default class Template {
 
     timer = Date.now();
 
-    // Creates a mask where the middle pixel is white, and everything else is transparent
-    const canvasMask = new OffscreenCanvas(3, 3);
-    const contextMask = canvasMask.getContext("2d");
-    contextMask.clearRect(0, 0, 3, 3);
-    contextMask.fillStyle = "white";
-    contextMask.fillRect(1, 1, 1, 1);
+    const mode = process.env.MODE || 'default';
+    let canvasMask;
+    if (mode !== 'checkerboard') {
+      canvasMask = new OffscreenCanvas(3, 3);
+      const contextMask = canvasMask.getContext("2d");
+      contextMask.clearRect(0, 0, 3, 3);
+      contextMask.fillStyle = "white";
+      if (mode === 'cross') {
+        contextMask.fillRect(1, 0, 1, 3);
+        contextMask.fillRect(0, 1, 3, 1);
+      } else { // default
+        contextMask.fillRect(1, 1, 1, 1);
+      }
+    }
 
     // For every tile...
     for (let pixelY = this.coords[3]; pixelY < imageHeight + this.coords[3]; ) {
@@ -151,15 +159,34 @@ export default class Template {
           drawSizeY * shreadSize // Y height to draw *at*
         ); // Coordinates and size of draw area of source image, then canvas
 
-        context.save(); // Saves the current context of the canvas
-        context.globalCompositeOperation = "destination-in"; // The existing canvas content is kept where both the new shape and existing canvas content overlap. Everything else is made transparent.
-        // For our purposes, this means any non-transparent pixels on the mask will be kept
-
-        // Fills the canvas with the mask
-        context.fillStyle = context.createPattern(canvasMask, "repeat");
-        context.fillRect(0, 0, canvasWidth, canvasHeight);
-
-        context.restore(); // Restores the context of the canvas to the previous save
+        if (mode === 'checkerboard') {
+            const sourceChunkData = context.getImageData(0, 0, canvasWidth, canvasHeight);
+            context.clearRect(0, 0, canvasWidth, canvasHeight);
+            const data = sourceChunkData.data;
+            for (let y = 0; y < drawSizeY; y++) {
+                for (let x = 0; x < drawSizeX; x++) {
+                    const cx = x * shreadSize + 1;
+                    const cy = y * shreadSize + 1;
+                    const i = (cy * canvasWidth + cx) * 4;
+                    if (data[i + 3] > 0) {
+                        context.fillStyle = `rgba(${data[i]},${data[i + 1]},${data[i + 2]},${data[i + 3] / 255})`;
+                        const globalX = pixelX + x;
+                        const globalY = pixelY + y;
+                        if ((globalX + globalY) % 2 === 0) {
+                            context.fillRect(x * shreadSize, y * shreadSize + 1, 3, 1); // Horizontal
+                        } else {
+                            context.fillRect(x * shreadSize + 1, y * shreadSize, 1, 3); // Vertical
+                        }
+                    }
+                }
+            }
+        } else {
+            context.save();
+            context.globalCompositeOperation = "destination-in";
+            context.fillStyle = context.createPattern(canvasMask, "repeat");
+            context.fillRect(0, 0, canvasWidth, canvasHeight);
+            context.restore();
+        }
 
         const imageData = context.getImageData(0, 0, canvasWidth, canvasHeight); // Data of the image on the canvas
 

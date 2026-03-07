@@ -24,20 +24,6 @@ const isGitHub = !!process.env?.GITHUB_ACTIONS; // Is this running in a GitHub A
 
 console.log(`${consoleStyle.BLUE}Starting build...${consoleStyle.RESET}`);
 
-// Tries to build the wiki if build.js is run in a GitHub Workflow
-// if (isGitHub) {
-//   try {
-//     console.log(`Generating JSDoc...`);
-//     execSync(`npx jsdoc src/ -r -d docs -t node_modules/minami`, { stdio: "inherit" });
-//     console.log(`JSDoc built ${consoleStyle.GREEN}successfully${consoleStyle.RESET}`);
-//   } catch (error) {
-//     console.error(`${consoleStyle.RED + consoleStyle.BOLD}Failed to generate JSDoc${consoleStyle.RESET}:`, error);
-//     process.exit(1);
-//   }
-// }
-
-console.log(`${consoleStyle.BLUE}Building 1 of 3...${consoleStyle.RESET}`);
-
 // Tries to bump the version
 try {
   const update = execSync('node build/update-version.js', { stdio: 'inherit' });
@@ -214,3 +200,4 @@ for (const build of builds) {
 }
 
 console.log(`${consoleStyle.GREEN + consoleStyle.BOLD + consoleStyle.UNDERLINE}Building complete!${consoleStyle.RESET}`);
+
