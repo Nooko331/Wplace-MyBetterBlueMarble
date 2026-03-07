@@ -157,7 +157,6 @@ for (const build of builds) {
       console.log(`${consoleStyle.YELLOW}Warning! Could not find a CSS map to import for ${build.name}. A 100% new CSS map will be generated...${consoleStyle.RESET}`);
     }
   }
-  }
 
   // Mangles the CSS selectors
   // If we are in production (GitHub Workflow), then generate the CSS mapping
@@ -175,45 +174,43 @@ for (const build of builds) {
     fs.writeFileSync(`${build.outDir}/${build.cssName}.map.json`, JSON.stringify(mapCSS, null, 2));
   }
 
-  // --- EMBED CSS INTO JS ---
-  // Read the final mangled CSS
-  const cssContent = fs.readFileSync(`${build.outDir}/${build.cssName}`, 'utf8');
-  
+  // --- EMBED RESOURCES INTO JS ---
   // Read the obfuscated JS
   let jsContent = fs.readFileSync(`${build.outDir}/${build.jsName}`, 'utf8');
 
-  // Replace GM_getResourceText("CSS-BM-File") with the actual CSS string
-  // We use JSON.stringify to safely quote and escape the CSS string
+  // Read the final mangled CSS
+  const cssContent = fs.readFileSync(`${build.outDir}/${build.cssName}`, 'utf8');
+
+  // Embed CSS by replacing the GM_getResourceText call
   jsContent = jsContent.replace(/GM_getResourceText\s*\(\s*["']CSS-BM-File["']\s*\)/g, JSON.stringify(cssContent));
-  
-  fs.writeFileSync(`${build.outDir}/${build.jsName}`, jsContent, 'utf8');
 
   // Prepare metadata
   let currentMeta = metaContent;
+
+  // --- Embed Icon ---
+  const favicon = fs.readFileSync('dist/assets/Favicon.png');
+  const faviconBase64DataURI = `data:image/png;base64,${favicon.toString('base64')}`;
+  // Replace the @icon URL with @icon64 base64 data in the metadata
+  currentMeta = currentMeta.replace(/^\/\/\s*@icon\s+https.*\r?\n?/gm, `// @icon64          ${faviconBase64DataURI}\n`);
   
   // Remove @resource CSS-BM-File since we embedded it
   currentMeta = currentMeta.replace(/^\/\/\s*@resource\s+CSS-BM-File\s+.*(\r\n|\n|\r)/gm, '');
 
-  if (build.name !== 'Default') {
-    // Modify name
-    currentMeta = currentMeta.replace('// @name         Blue Marble', `// @name         Blue Marble (${build.name})`);
+  // Modify name for variants
+  if (build.name !== 'Original') {
+    currentMeta = currentMeta.replace('// @name            Blue Marble', `// @name            Blue Marble (${build.name})`);
     
-    // Modify URLs to point to the correct files
-    // Replacing dist/BlueMarble.user.js with dist-checkerboard/BlueMarble-Checkerboard.user.js (etc)
+    // Modify URLs to point to the correct files for variants
     const newJsPath = `${build.outDir}/${build.jsName}`;
-    const newCssPath = `${build.outDir}/${build.cssName}`;
-    
     currentMeta = currentMeta.replace(/dist\/BlueMarble\.user\.js/g, newJsPath);
-    currentMeta = currentMeta.replace(/dist\/BlueMarble\.user\.css/g, newCssPath);
   }
 
-  // Adds the banner
+  // Prepend the final metadata banner and write the complete standalone file
   fs.writeFileSync(
     `${build.outDir}/${build.jsName}`, 
-    currentMeta + fs.readFileSync(`${build.outDir}/${build.jsName}`, 'utf8'), 
+    currentMeta + jsContent, 
     'utf8'
   );
 }
-
 
 console.log(`${consoleStyle.GREEN + consoleStyle.BOLD + consoleStyle.UNDERLINE}Building complete!${consoleStyle.RESET}`);
