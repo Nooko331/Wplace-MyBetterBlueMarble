@@ -24,20 +24,6 @@ const isGitHub = !!process.env?.GITHUB_ACTIONS; // Is this running in a GitHub A
 
 console.log(`${consoleStyle.BLUE}Starting build...${consoleStyle.RESET}`);
 
-// Tries to build the wiki if build.js is run in a GitHub Workflow
-// if (isGitHub) {
-//   try {
-//     console.log(`Generating JSDoc...`);
-//     execSync(`npx jsdoc src/ -r -d docs -t node_modules/minami`, { stdio: "inherit" });
-//     console.log(`JSDoc built ${consoleStyle.GREEN}successfully${consoleStyle.RESET}`);
-//   } catch (error) {
-//     console.error(`${consoleStyle.RED + consoleStyle.BOLD}Failed to generate JSDoc${consoleStyle.RESET}:`, error);
-//     process.exit(1);
-//   }
-// }
-
-console.log(`${consoleStyle.BLUE}Building 1 of 3...${consoleStyle.RESET}`);
-
 // Tries to bump the version
 try {
   const update = execSync('node build/update-version.js', { stdio: 'inherit' });
@@ -68,150 +54,149 @@ esbuild.build({
   minify: true
 });
 
-// Compiles the JS files
-const resultEsbuild = await esbuild.build({
-  entryPoints: ['src/main.js'], // "Infect" the files from this point (it spreads from this "patient 0")
-  bundle: true, // Should the code be bundled?
-  outfile: 'dist/BlueMarble.user.js', // The file the bundled code is exported to
-  format: 'iife', // What format the bundler bundles the code into
-  target: 'es2020', // What is the minimum version/year that should be supported? When omited, it attempts to support backwards compatability with legacy browsers
-  platform: 'browser', // The platform the bundled code will be operating on
-  legalComments: 'inline', // What level of legal comments are preserved? (Hard: none, Soft: inline)
-  minify: false, // Should the code be minified?
-  write: false, // Should we write the outfile to the disk?
-}).catch(() => process.exit(1));
+async function buildVariant(variant) {
+  console.log(`${consoleStyle.BLUE}Building ${variant.name} version...${consoleStyle.RESET}`);
 
-// Retrieves the JS file
-const resultEsbuildJS = resultEsbuild.outputFiles.find(file => file.path.endsWith('.js'));
+  const outputDir = variant.dir;
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
 
-// Obfuscates the JS file
-let resultTerser = await terser.minify(resultEsbuildJS.text, {
-  mangle: {
-    // toplevel: true, // Should globally exposed variables, functions, classes, etc. be obfuscated?
-    keep_classnames: false, // Should class names be preserved?
-    keep_fnames: false, // Should function names be preserved?
-    reserved: [], // List of keywords to preserve
-    properties: {
-      // regex: /.*/, // Yes, I am aware I should be using a RegEx. Yes, like you, I am also suprised the userscript still functions
-      keep_quoted: true, // Should names in quotes be preserved?
-      reserved: ['willReadFrequently'] // What properties should be preserved?
+  // Compiles the JS files
+  const resultEsbuild = await esbuild.build({
+    entryPoints: ['src/main.js'], // "Infect" the files from this point (it spreads from this "patient 0")
+    bundle: true, // Should the code be bundled?
+    outfile: `${outputDir}/BlueMarble.user.js`, // The file the bundled code is exported to
+    format: 'iife', // What format the bundler bundles the code into
+    target: 'es2020', // What is the minimum version/year that should be supported? When omited, it attempts to support backwards compatability with legacy browsers
+    platform: 'browser', // The platform the bundled code will be operating on
+    legalComments: 'inline', // What level of legal comments are preserved? (Hard: none, Soft: inline)
+    minify: false, // Should the code be minified?
+    write: false, // Should we write the outfile to the disk?
+    define: {
+      'process.env.MODE': JSON.stringify(variant.mode)
+    }
+  }).catch(() => process.exit(1));
+
+  // Retrieves the JS file
+  const resultEsbuildJS = resultEsbuild.outputFiles.find(file => file.path.endsWith('.js'));
+
+  // Obfuscates the JS file
+  let resultTerser = await terser.minify(resultEsbuildJS.text, {
+    mangle: {
+      keep_classnames: false,
+      keep_fnames: false,
+      reserved: [],
+      properties: {
+        keep_quoted: true,
+        reserved: ['willReadFrequently']
+      },
     },
-  },
-  format: {
-    comments: 'some' // Save legal comments
-  },
-  compress: {
-    // toplevel: true, // Should unused globally exposed variables, functions, classes, etc. be removed if unused *by Blue Marble*?
-    ecma: 2020, // Minimum supported ECMAScript version as release year. Note: versions before 2015 should pass in '5'
-    dead_code: isGitHub, // Should unreachable code be removed?
-    drop_console: isGitHub, // Should console code be removed?
-    drop_debugger: isGitHub, // SHould debugger code be removed?
-    passes: 2 // How many times terser will compress the code
+    format: {
+      comments: 'some'
+    },
+    compress: {
+      ecma: 2020,
+      dead_code: isGitHub,
+      drop_console: isGitHub,
+      drop_debugger: isGitHub,
+      passes: 2
+    }
+  });
+
+  // Writes the obfuscated/mangled JS code to a file
+  fs.writeFileSync(`${outputDir}/BlueMarble.user.js`, resultTerser.code, 'utf8');
+
+  let importedMapCSS = {}; // The imported CSS map
+
+  if (!isGitHub) {
+    try {
+      importedMapCSS = JSON.parse(fs.readFileSync('dist/BlueMarble.user.css.map.json', 'utf8'));
+    } catch {
+      console.log(`${consoleStyle.YELLOW}Warning! Could not find a CSS map to import. A 100% new CSS map will be generated...${consoleStyle.RESET}`);
+    }
   }
-});
 
-// Writes the obfuscated/mangled JS code to a file
-fs.writeFileSync('dist/BlueMarble.user.js', resultTerser.code, 'utf8');
+  // Mangles the CSS selectors
+  const mapCSS = mangleSelectors({
+    inputPrefix: 'bm-',
+    outputPrefix: 'bm-',
+    pathJS: `${outputDir}/BlueMarble.user.js`,
+    pathCSS: 'dist/BlueMarble.user.css',
+    importMap: importedMapCSS,
+    returnMap: isGitHub
+  });
 
-let importedMapCSS = {}; // The imported CSS map
-
-// Only import a CSS map if we are NOT in production (GitHub Workflow)
-// Theoretically, if the previous map is always imported, the names would not scramble. However, the names would never decrease in number...
-if (!isGitHub) {
-  try {
-    importedMapCSS = JSON.parse(fs.readFileSync('dist/BlueMarble.user.css.map.json', 'utf8'));
-  } catch {
-    console.log(`${consoleStyle.YELLOW}Warning! Could not find a CSS map to import. A 100% new CSS map will be generated...${consoleStyle.RESET}`);
+  if (mapCSS) {
+    fs.writeFileSync('dist/BlueMarble.user.css.map.json', JSON.stringify(mapCSS, null, 2));
   }
+
+  // Adds the banner
+  let finalMetaContent = metaContent;
+  if (variant.mode !== 'default') {
+    const newName = `Blue Marble-${variant.name}`;
+    finalMetaContent = finalMetaContent
+      .replace(/(^\/\/ @name\s+)(.*)/m, `$1${newName}`)
+      .replace(/(^\/\/ @name:en\s+)(.*)/m, `$1${newName}`)
+      .replace(/\/\/ @updateURL.*/g, '// @updateURL none')
+      .replace(/\/\/ @downloadURL.*/g, '// @downloadURL none');
+  }
+
+  fs.writeFileSync(
+    `${outputDir}/BlueMarble.user.js`,
+    finalMetaContent + fs.readFileSync(`${outputDir}/BlueMarble.user.js`, 'utf8'),
+    'utf8'
+  );
+
+  await createStandaloneVersion(variant.name, outputDir);
 }
 
-// Mangles the CSS selectors
-// If we are in production (GitHub Workflow), then generate the CSS mapping
-const mapCSS = mangleSelectors({
-  inputPrefix: 'bm-',
-  outputPrefix: 'bm-',
-  pathJS: 'dist/BlueMarble.user.js',
-  pathCSS: 'dist/BlueMarble.user.css',
-  importMap: importedMapCSS,
-  returnMap: isGitHub
-});
+async function createStandaloneVersion(name, dir) {
+  const standaloneName = 'BlueMarble-' + name;
+  const standaloneBMUpdateURL = `https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/main/${dir}/${standaloneName}.user.js`;
 
-// If a map was returned, write it to the file
-if (mapCSS) {
-  fs.writeFileSync('dist/BlueMarble.user.css.map.json', JSON.stringify(mapCSS, null, 2));
+  const mainBMjs = fs.readFileSync(`${dir}/BlueMarble.user.js`, 'utf8');
+  let mainBMcss = fs.readFileSync('dist/BlueMarble.user.css', 'utf8');
+
+  mainBMcss = mainBMcss.replace(/\r?\n/g, '').trim();
+
+  let standaloneBMjs = mainBMjs.replace('GM_getResourceText("CSS-BM-File")', `\`${mainBMcss}\``);
+
+  standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@resource\s+CSS-BM-File.*\r?\n?/g, '');
+
+  const robotoMonoLatin = fs.readFileSync('build/assets/RobotoMonoLatin.woff2');
+  const robotoMonoLatinBase64 = robotoMonoLatin.toString('base64');
+  const fontfaces = `@font-face{font-family:'Roboto Mono';font-style:normal;font-weight:400;src:url(data:font/woff2;base64,${robotoMonoLatinBase64})format('woff2');}`;
+
+  standaloneBMjs = standaloneBMjs.replace(/robotoMonoInjectionPoint[^'"]*/g, fontfaces);
+
+  const favicon = fs.readFileSync('dist/assets/Favicon.png');
+  const faviconBase64DataURI = `data:image/png;base64,${favicon.toString('base64')}`;
+
+  standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@icon\s+https.*\r?\n?/g, `// @icon64          ${faviconBase64DataURI}\n`);
+  standaloneBMjs = standaloneBMjs.replace(/https[^'"]+dist\/assets\/Favicon\.png[^'"]*/gi, faviconBase64DataURI);
+
+  if (name !== 'Standalone') {
+    standaloneBMjs = standaloneBMjs
+      .replace(/\/\/ @updateURL.*/g, '// @updateURL none')
+      .replace(/\/\/ @downloadURL.*/g, '// @downloadURL none');
+  } else {
+    standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@updateURL\s+https.*\r?\n?/g, `// @updateURL       ${standaloneBMUpdateURL}\n`);
+    standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@downloadURL\s+https.*\r?\n?/g, `// @downloadURL     ${standaloneBMUpdateURL}\n`);
+  }
+
+  fs.writeFileSync(`${dir}/${standaloneName}.user.js`, standaloneBMjs, 'utf-8');
 }
 
-// Adds the banner
-fs.writeFileSync(
-  'dist/BlueMarble.user.js', 
-  metaContent + fs.readFileSync('dist/BlueMarble.user.js', 'utf8'), 
-  'utf8'
-);
+const buildVariants = [
+  { name: 'Standalone', dir: 'dist', mode: 'default' },
+  { name: 'Cross', dir: 'dist-cross', mode: 'cross' },
+  { name: 'Checkerboard', dir: 'dist-checkerboard', mode: 'checkerboard' }
+];
 
-console.log(`${consoleStyle.BLUE}Building 2 of 3...${consoleStyle.RESET}`);
-
-const standaloneName = 'BlueMarble-Standalone'; // Standalone flavor name of flie
-const standaloneBMUpdateURL = `https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/main/dist/${standaloneName}.user.js`;
-
-// Fetches the completed, main Blue Marble userscript files
-const mainBMjs = fs.readFileSync('dist/BlueMarble.user.js', 'utf8');
-let mainBMcss = fs.readFileSync('dist/BlueMarble.user.css', 'utf8');
-
-// Removes new lines from the CSS file
-mainBMcss = mainBMcss.replace(/\r?\n/g, '').trim();
-
-// Injects the CSS into the Blue Marble JavaScript
-let standaloneBMjs = mainBMjs.replace('GM_getResourceText("CSS-BM-File")', `\`${mainBMcss}\``);
-
-// Removes the metadata in the header that points to the old CSS location
-standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@resource\s+CSS-BM-File.*\r?\n?/g, '');
-
-// Obtains the Roboto Mono font to inject
-const robotoMonoLatin = fs.readFileSync('build/assets/RobotoMonoLatin.woff2');
-const robotoMonoLatinBase64 = robotoMonoLatin.toString('base64');
-const fontfaces = `@font-face{font-family:'Roboto Mono';font-style:normal;font-weight:400;src:url(data:font/woff2;base64,${robotoMonoLatinBase64})format('woff2');}`;
-
-// Injects Roboto Mono into the JavaScript file
-standaloneBMjs = standaloneBMjs.replace(/robotoMonoInjectionPoint[^'"]*/g, fontfaces);
-
-// Obtains the Favicon to inject
-const favicon = fs.readFileSync('dist/assets/Favicon.png');
-const faviconBase64DataURI = `data:image/png;base64,${favicon.toString('base64')}`;
-
-// Replaces the 2 different types of icon requests with base64
-standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@icon\s+https.*\r?\n?/g, `// @icon64          ${faviconBase64DataURI}\n`);
-standaloneBMjs = standaloneBMjs.replace(/https[^'"]+dist\/assets\/Favicon\.png[^'"]*/gi, faviconBase64DataURI);
-
-// Updates the update/download URLs
-standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@updateURL\s+https.*\r?\n?/g, `// @updateURL       ${standaloneBMUpdateURL}\n`);
-standaloneBMjs = standaloneBMjs.replace(/\/\/\s+\@downloadURL\s+https.*\r?\n?/g, `// @downloadURL     ${standaloneBMUpdateURL}\n`);
-
-// Generates the Blue Marble JS file that contains all external resources
-fs.writeFileSync(`dist/${standaloneName}.user.js`, standaloneBMjs, 'utf-8');
-
-console.log(`${consoleStyle.BLUE}Building 3 of 3...${consoleStyle.RESET}`);
-
-const greasyForkName = 'BlueMarble-For-GreasyFork'; // GreasyFork flavor name of file
-const greasyForkUpdateURL = `https://raw.githubusercontent.com/SwingTheVine/Wplace-BlueMarble/main/dist/${greasyForkName}.user.js`;
-
-let greasyForkBMjs = metaContent + resultEsbuildJS.text; // Gets the unobfuscated code and adds the metadata banner
-
-// Updates the name of the CSS location
-greasyForkBMjs = greasyForkBMjs.replace(/(.*\/\/\s+\@resource\s+CSS-BM-File.*)(BlueMarble\.user\.css)(.*)/gi, `$1${greasyForkName}.user.css$3`);
-// Don't use the multiline flag or everything will break!
-
-// Updates the update/download URLs
-greasyForkBMjs = greasyForkBMjs.replace(/\/\/\s+\@updateURL\s+https.*\r?\n?/g, `// @updateURL       ${greasyForkUpdateURL}\n`);
-greasyForkBMjs = greasyForkBMjs.replace(/\/\/\s+\@downloadURL\s+https.*\r?\n?/g, `// @downloadURL     ${greasyForkUpdateURL}\n`);
-
-// Bundles the CSS files without minification
-esbuild.build({
-  entryPoints: ['src/main.css'],
-  bundle: true,
-  outfile: `dist/${greasyForkName}.user.css`,
-  minify: false
-});
-
-fs.writeFileSync(`dist/${greasyForkName}.user.js`, greasyForkBMjs, 'utf-8');
+for (const variant of buildVariants) {
+  await buildVariant(variant);
+}
 
 console.log(`${consoleStyle.GREEN + consoleStyle.BOLD + consoleStyle.UNDERLINE}Building complete!${consoleStyle.RESET}`);
+
