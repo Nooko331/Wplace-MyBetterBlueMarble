@@ -5,7 +5,7 @@
  */
 
 import TemplateManager from "./templateManager.js";
-import { consoleError, escapeHTML, numberToEncoded, serverTPtoDisplayTP } from "./utils.js";
+import { consoleError, escapeHTML, localizeNumber, numberToEncoded, serverTPtoDisplayTP } from "./utils.js";
 
 export default class ApiManager {
 
@@ -16,6 +16,7 @@ export default class ApiManager {
   constructor(templateManager) {
     this.templateManager = templateManager;
     this.disableAll = false; // Should the entire userscript be disabled?
+    this.chargeRefillTimerID = ''; // Contains the Charge refill timer element ID attribute so we can update the timer.
     this.coordsTilePixel = []; // Contains the last detected tile/pixel coordinate pair requested
     this.templateCoordsTilePixel = []; // Contains the last "enabled" template coords
   }
@@ -58,7 +59,7 @@ export default class ApiManager {
           if (dataJSON['status'] && dataJSON['status']?.toString()[0] != '2') {
             // The server is probably down (NOT a 2xx status)
             
-            overlay.handleDisplayError(`You are not logged in!\nCould not fetch userdata.`);
+            overlay.handleDisplayError(`You are not logged in or Wplace is offline!\nCould not fetch userdata.`);
             return; // Kills itself before attempting to display null userdata
           }
 
@@ -72,10 +73,25 @@ export default class ApiManager {
             ));
           }
           this.templateManager.userID = dataJSON['id'];
-          
-          overlay.updateInnerHTML('bm-user-name', `Username: <b>${escapeHTML(dataJSON['name'])}</b>`); // Updates the text content of the username field
-          overlay.updateInnerHTML('bm-user-droplets', `Droplets: <b>${new Intl.NumberFormat().format(dataJSON['droplets'])}</b>`); // Updates the text content of the droplets field
-          overlay.updateInnerHTML('bm-user-nextlevel', `Next level in <b>${new Intl.NumberFormat().format(nextLevelPixels)}</b> pixel${nextLevelPixels == 1 ? '' : 's'}`); // Updates the text content of the next level field
+
+          // Obtains the refill timer for charges
+          if (this.chargeRefillTimerID.length != 0) {
+            const chargeRefillTimer = document.querySelector('#' + this.chargeRefillTimerID);
+            
+            // If the refill timer exists...
+            if (chargeRefillTimer) {
+              
+              /** Obtains the information about the user's charges @type {{cooldownMs: number, count: number, max: number}} */
+              const chargeData = dataJSON['charges'];
+  
+              // Date that the user's charges will be refilled
+              chargeRefillTimer.dataset['endDate'] = Date.now() + ((chargeData['max'] - chargeData['count']) * chargeData['cooldownMs']);
+            }
+          }
+
+          // Updates displayed droplet information
+          overlay.updateInnerHTML('bm-user-droplets', `Droplets: <b>${localizeNumber(dataJSON['droplets'])}</b>`); // Updates the text content of the droplets field
+          overlay.updateInnerHTML('bm-user-nextlevel', `Next level in <b>${localizeNumber(nextLevelPixels)}</b> pixel${nextLevelPixels == 1 ? '' : 's'}`); // Updates the text content of the next level field
           break;
 
         case 'pixel': // Request to retrieve pixel data
@@ -116,16 +132,18 @@ export default class ApiManager {
           }
           break;
         
+        case 'tile':
         case 'tiles':
 
-          // Runs only if the tile has the template
           let tileCoordsTile = data['endpoint'].split('/');
           tileCoordsTile = [parseInt(tileCoordsTile[tileCoordsTile.length - 2]), parseInt(tileCoordsTile[tileCoordsTile.length - 1].replace('.png', ''))];
           
           const blobUUID = data['blobID'];
           const blobData = data['blobData'];
           
+          const timer = Date.now();
           const templateBlob = await this.templateManager.drawTemplateOnTile(blobData, tileCoordsTile);
+          console.log(`Finished loading the tile in ${(Date.now() - timer) / 1000} seconds!`);
 
           window.postMessage({
             source: 'blue-marble',
@@ -156,8 +174,8 @@ export default class ApiManager {
     }
 
     const ua = navigator.userAgent;
-    let browser = await this.#getBrowserFromUA(ua);
-    let os = this.#getOS(ua);
+    let browser = await this.getBrowserFromUA(ua);
+    let os = this.getOS(ua);
 
     GM_xmlhttpRequest({
       method: 'POST',
@@ -182,7 +200,7 @@ export default class ApiManager {
     });
   }
 
-  async #getBrowserFromUA(ua = navigator.userAgent) {
+  async getBrowserFromUA(ua = navigator.userAgent) {
     ua = ua || "";
 
     // Opera
@@ -221,7 +239,7 @@ export default class ApiManager {
     return 'Unknown';
   }
 
-  #getOS(ua = navigator.userAgent) {
+  getOS(ua = navigator.userAgent) {
     ua = ua || "";
 
     if (/Windows NT 11/i.test(ua)) return "Windows 11";
