@@ -109,6 +109,9 @@ export default class TemplateManager {
     this.templatePixelsCorrect = null; // An object where the keys are the tile coords, and the values are Maps (BM palette color IDs) containing the amount of correctly placed pixels for that tile in this template
     /** Will contain all color ID's to filter @type {Map<number, boolean>} */
     this.shouldFilterColor = new Map();
+
+    // Loads templates from storage
+    this.importJSON(JSON.parse(GM_getValue('bmTemplates', '{}')));
   }
 
   /** Creates the JSON object to store templates in
@@ -140,7 +143,7 @@ export default class TemplateManager {
     // Creates a new template instance
     const template = new Template({
       displayName: name,
-      sortID: 0, // Object.keys(this.templatesJSON.templates).length || 0, // Uncomment this to enable multiple templates (1/2)
+      sortID: Object.keys(this.templatesJSON.templates).length || 0, // Uncomment this to enable multiple templates (1/2)
       authorID: numberToEncoded(this.userID || 0, this.encodingBase),
       file: blob,
       coords: coords
@@ -163,7 +166,7 @@ export default class TemplateManager {
       "tiles": templateTilesBuffers // Stores the chunked tile buffers
     };
 
-    this.templatesArray = []; // Remove this to enable multiple templates (2/2)
+    // this.templatesArray = []; // Remove this to enable multiple templates (2/2)
     this.templatesArray.push(template); // Pushes the Template object instance to the Template Array
 
     this.overlay.handleDisplayStatus(`Template created at ${coords.join(', ')}!`);
@@ -602,7 +605,7 @@ export default class TemplateManager {
     console.log(json);
 
     // If the passed in JSON is a Blue Marble template object...
-    if (json?.whoami == 'BlueMarble') {
+    if (json?.whoami == this.name.replace(' ', '')) {
       this.#parseBlueMarble(json); // ...parse the template object as Blue Marble
     }
   }
