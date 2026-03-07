@@ -411,7 +411,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;br> elements have a shared class (e.g. {'className': 'bar'})overlay.addbr({'id': 'foo'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;br id="foo" class="bar">&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;br> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addbr({'id': 'foo'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;br id="foo" class="bar">
+&lt;/body></code></pre>
 
 </div>
 
@@ -645,7 +651,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;button> elements have a shared class (e.g. {'className': 'bar'})overlay.addButton({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;button id="foo" class="bar">Foobar.&lt;/button>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;button> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addButton({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;button id="foo" class="bar">Foobar.&lt;/button>
+&lt;/body></code></pre>
 
 </div>
 
@@ -880,9 +892,21 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Examples</h5>
 
-    <pre class="prettyprint"><code>// Assume all help button elements have a shared class (e.g. {'className': 'bar'})overlay.addButtonHelp({'id': 'foo', 'title': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;button id="foo" class="bar" title="Help: Foobar.">?&lt;/button>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all help button elements have a shared class (e.g. {'className': 'bar'})
+overlay.addButtonHelp({'id': 'foo', 'title': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;button id="foo" class="bar" title="Help: Foobar.">?&lt;/button>
+&lt;/body></code></pre>
 
-    <pre class="prettyprint"><code>// Assume all help button elements have a shared class (e.g. {'className': 'bar'})overlay.addButtonHelp({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;button id="foo" class="bar" title="Help: Foobar.">?&lt;/button>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all help button elements have a shared class (e.g. {'className': 'bar'})
+overlay.addButtonHelp({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;button id="foo" class="bar" title="Help: Foobar.">?&lt;/button>
+&lt;/body></code></pre>
 
 </div>
 
@@ -1116,7 +1140,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;caption> elements have a shared class (e.g. {'className': 'bar'})overlay.addCaption({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;caption id="foo" class="bar">Foobar.&lt;/caption>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;caption> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addCaption({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;caption id="foo" class="bar">Foobar.&lt;/caption>
+&lt;/body></code></pre>
 
 </div>
 
@@ -1350,7 +1380,16 @@ You can override the shared properties by using a callback. Note: the checkbox e
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all checkbox elements have a shared class (e.g. {'className': 'bar'})overlay.addCheckbox({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;label>    &lt;input type="checkbox" id="foo" class="bar">    "Foobar."  &lt;/label>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all checkbox elements have a shared class (e.g. {'className': 'bar'})
+overlay.addCheckbox({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;label>
+    &lt;input type="checkbox" id="foo" class="bar">
+    "Foobar."
+  &lt;/label>
+&lt;/body></code></pre>
 
 </div>
 
@@ -1584,7 +1623,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;details> elements have a shared class (e.g. {'className': 'bar'})overlay.addDetails({'id': 'foo'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;details id="foo" class="bar">&lt;/details>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;details> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addDetails({'id': 'foo'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;details id="foo" class="bar">&lt;/details>
+&lt;/body></code></pre>
 
 </div>
 
@@ -1818,7 +1863,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;div> elements have a shared class (e.g. {'className': 'bar'})overlay.addDiv({'id': 'foo'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;div id="foo" class="bar">&lt;/div>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;div> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addDiv({'id': 'foo'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;div id="foo" class="bar">&lt;/div>
+&lt;/body></code></pre>
 
 </div>
 
@@ -2052,7 +2103,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all dragbar elements have a shared class (e.g. {'className': 'bar'})overlay.addDragbar({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;div id="foo" class="bar">Foobar.&lt;/div>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all dragbar elements have a shared class (e.g. {'className': 'bar'})
+overlay.addDragbar({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;div id="foo" class="bar">Foobar.&lt;/div>
+&lt;/body></code></pre>
 
 </div>
 
@@ -2286,7 +2343,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;fieldset> elements have a shared class (e.g. {'className': 'bar'})overlay.addFieldset({'id': 'foo'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;fieldset id="foo" class="bar">&lt;/fieldset>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;fieldset> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addFieldset({'id': 'foo'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;fieldset id="foo" class="bar">&lt;/fieldset>
+&lt;/body></code></pre>
 
 </div>
 
@@ -2520,7 +2583,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;form> elements have a shared class (e.g. {'className': 'bar'})overlay.addForm({'id': 'foo'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;form id="foo" class="bar">&lt;/form>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;form> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addForm({'id': 'foo'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;form id="foo" class="bar">&lt;/form>
+&lt;/body></code></pre>
 
 </div>
 
@@ -2792,7 +2861,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all header elements have a shared class (e.g. {'className': 'bar'})overlay.addHeader(6, {'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;h6 id="foo" class="bar">Foobar.&lt;/h6>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all header elements have a shared class (e.g. {'className': 'bar'})
+overlay.addHeader(6, {'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;h6 id="foo" class="bar">Foobar.&lt;/h6>
+&lt;/body></code></pre>
 
 </div>
 
@@ -3026,7 +3101,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;hr> elements have a shared class (e.g. {'className': 'bar'})overlay.addhr({'id': 'foo'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;hr id="foo" class="bar">&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;hr> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addhr({'id': 'foo'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;hr id="foo" class="bar">
+&lt;/body></code></pre>
 
 </div>
 
@@ -3260,7 +3341,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;img> elements have a shared class (e.g. {'className': 'bar'})overlay.addimg({'id': 'foo', 'src': './img.png'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;img id="foo" src="./img.png" class="bar">&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;img> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addimg({'id': 'foo', 'src': './img.png'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;img id="foo" src="./img.png" class="bar">
+&lt;/body></code></pre>
 
 </div>
 
@@ -3494,7 +3581,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;input> elements have a shared class (e.g. {'className': 'bar'})overlay.addInput({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;input id="foo" class="bar">Foobar.&lt;/input>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;input> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addInput({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;input id="foo" class="bar">Foobar.&lt;/input>
+&lt;/body></code></pre>
 
 </div>
 
@@ -3729,7 +3822,16 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all file input elements have a shared class (e.g. {'className': 'bar'})overlay.addInputFile({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;div>    &lt;input type="file" id="foo" class="bar" style="display: none">&lt;/input>    &lt;button>Foobar.&lt;/button>  &lt;/div>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all file input elements have a shared class (e.g. {'className': 'bar'})
+overlay.addInputFile({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;div>
+    &lt;input type="file" id="foo" class="bar" style="display: none">&lt;/input>
+    &lt;button>Foobar.&lt;/button>
+  &lt;/div>
+&lt;/body></code></pre>
 
 </div>
 
@@ -3963,7 +4065,15 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;legend> elements have a shared class (e.g. {'className': 'bar'})overlay.addLegend({'id': 'foo', textContent: 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;legend id="foo" class="bar">    "Foobar."  &lt;/legend>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;legend> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addLegend({'id': 'foo', textContent: 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;legend id="foo" class="bar">
+    "Foobar."
+  &lt;/legend>
+&lt;/body></code></pre>
 
 </div>
 
@@ -4197,7 +4307,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;li> elements have a shared class (e.g. {'className': 'bar'})overlay.addLi({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;li id="foo" class="bar">Foobar.&lt;/li>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;li> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addLi({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;li id="foo" class="bar">Foobar.&lt;/li>
+&lt;/body></code></pre>
 
 </div>
 
@@ -4431,7 +4547,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;menu> elements have a shared class (e.g. {'className': 'bar'})overlay.addMenu({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;menu id="foo" class="bar">Foobar.&lt;/menu>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;menu> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addMenu({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;menu id="foo" class="bar">Foobar.&lt;/menu>
+&lt;/body></code></pre>
 
 </div>
 
@@ -4665,7 +4787,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;ol> elements have a shared class (e.g. {'className': 'bar'})overlay.addOl({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;ol id="foo" class="bar">Foobar.&lt;/ol>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;ol> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addOl({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;ol id="foo" class="bar">Foobar.&lt;/ol>
+&lt;/body></code></pre>
 
 </div>
 
@@ -4899,7 +5027,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;option> elements have a shared class (e.g. {'className': 'bar'})overlay.addOption({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;option id="foo" class="bar">Foobar.&lt;/option>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;option> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addOption({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;option id="foo" class="bar">Foobar.&lt;/option>
+&lt;/body></code></pre>
 
 </div>
 
@@ -5133,7 +5267,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;p> elements have a shared class (e.g. {'className': 'bar'})overlay.addP({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;p id="foo" class="bar">Foobar.&lt;/p>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;p> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addP({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;p id="foo" class="bar">Foobar.&lt;/p>
+&lt;/body></code></pre>
 
 </div>
 
@@ -5367,7 +5507,16 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all select elements have a shared class (e.g. {'className': 'bar'})overlay.addSelect({'id': 'foo', 'textContent': 'Foobar: '}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;label for="foo">    "Foobar: "  &lt;/label>  &lt;select id="foo" class="bar">&lt;/select>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all select elements have a shared class (e.g. {'className': 'bar'})
+overlay.addSelect({'id': 'foo', 'textContent': 'Foobar: '}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;label for="foo">
+    "Foobar: "
+  &lt;/label>
+  &lt;select id="foo" class="bar">&lt;/select>
+&lt;/body></code></pre>
 
 </div>
 
@@ -5601,7 +5750,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;small> elements have a shared class (e.g. {'className': 'bar'})overlay.addSmall({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;small id="foo" class="bar">Foobar.&lt;/small>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;small> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addSmall({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;small id="foo" class="bar">Foobar.&lt;/small>
+&lt;/body></code></pre>
 
 </div>
 
@@ -5835,7 +5990,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;span> elements have a shared class (e.g. {'className': 'bar'})overlay.addSpan({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;span id="foo" class="bar">Foobar.&lt;/span>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;span> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addSpan({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;span id="foo" class="bar">Foobar.&lt;/span>
+&lt;/body></code></pre>
 
 </div>
 
@@ -6069,7 +6230,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;summary> elements have a shared class (e.g. {'className': 'bar'})overlay.addSummary({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;summary id="foo" class="bar">Foobar.&lt;/summary>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;summary> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addSummary({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;summary id="foo" class="bar">Foobar.&lt;/summary>
+&lt;/body></code></pre>
 
 </div>
 
@@ -6303,7 +6470,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;table> elements have a shared class (e.g. {'className': 'bar'})overlay.addTable({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;table id="foo" class="bar">Foobar.&lt;/table>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;table> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addTable({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;table id="foo" class="bar">Foobar.&lt;/table>
+&lt;/body></code></pre>
 
 </div>
 
@@ -6537,7 +6710,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;tbody> elements have a shared class (e.g. {'className': 'bar'})overlay.addTbody({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;tbody id="foo" class="bar">Foobar.&lt;/tbody>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;tbody> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addTbody({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;tbody id="foo" class="bar">Foobar.&lt;/tbody>
+&lt;/body></code></pre>
 
 </div>
 
@@ -6771,7 +6950,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;td> elements have a shared class (e.g. {'className': 'bar'})overlay.addTd({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;td id="foo" class="bar">Foobar.&lt;/td>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;td> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addTd({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;td id="foo" class="bar">Foobar.&lt;/td>
+&lt;/body></code></pre>
 
 </div>
 
@@ -7005,7 +7190,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;textarea> elements have a shared class (e.g. {'className': 'bar'})overlay.addTextarea({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;textarea id="foo" class="bar">Foobar.&lt;/textarea>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;textarea> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addTextarea({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;textarea id="foo" class="bar">Foobar.&lt;/textarea>
+&lt;/body></code></pre>
 
 </div>
 
@@ -7239,7 +7430,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;tfoot> elements have a shared class (e.g. {'className': 'bar'})overlay.addTfoot({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;tfoot id="foo" class="bar">Foobar.&lt;/tfoot>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;tfoot> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addTfoot({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;tfoot id="foo" class="bar">Foobar.&lt;/tfoot>
+&lt;/body></code></pre>
 
 </div>
 
@@ -7473,7 +7670,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;th> elements have a shared class (e.g. {'className': 'bar'})overlay.addTh({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;th id="foo" class="bar">Foobar.&lt;/th>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;th> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addTh({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;th id="foo" class="bar">Foobar.&lt;/th>
+&lt;/body></code></pre>
 
 </div>
 
@@ -7707,7 +7910,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;thead> elements have a shared class (e.g. {'className': 'bar'})overlay.addThead({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;thead id="foo" class="bar">Foobar.&lt;/thead>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;thead> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addThead({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;thead id="foo" class="bar">Foobar.&lt;/thead>
+&lt;/body></code></pre>
 
 </div>
 
@@ -8028,7 +8237,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all timers have a shared class (e.g. {'className': 'bar'})overlay.addTimer(Date.now() + 2211632704000, 500, {'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;time id="bm-timer-dh8fhw80" class="bar" datetime="PT27H34M56S" data-end-date="1771749296000">27:34:56&lt;/div>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all timers have a shared class (e.g. {'className': 'bar'})
+overlay.addTimer(Date.now() + 2211632704000, 500, {'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;time id="bm-timer-dh8fhw80" class="bar" datetime="PT27H34M56S" data-end-date="1771749296000">27:34:56&lt;/div>
+&lt;/body></code></pre>
 
 </div>
 
@@ -8262,7 +8477,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;tr> elements have a shared class (e.g. {'className': 'bar'})overlay.addTr({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;tr id="foo" class="bar">Foobar.&lt;/tr>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;tr> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addTr({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;tr id="foo" class="bar">Foobar.&lt;/tr>
+&lt;/body></code></pre>
 
 </div>
 
@@ -8496,7 +8717,13 @@ You can override the shared properties by using a callback.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>// Assume all &lt;ul> elements have a shared class (e.g. {'className': 'bar'})overlay.addUl({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);// Output:// (Assume &lt;body> already exists in the webpage)&lt;body>  &lt;ul id="foo" class="bar">Foobar.&lt;/ul>&lt;/body></code></pre>
+    <pre class="prettyprint"><code>// Assume all &lt;ul> elements have a shared class (e.g. {'className': 'bar'})
+overlay.addUl({'id': 'foo', 'textContent': 'Foobar.'}).buildOverlay(document.body);
+// Output:
+// (Assume &lt;body> already exists in the webpage)
+&lt;body>
+  &lt;ul id="foo" class="bar">Foobar.&lt;/ul>
+&lt;/body></code></pre>
 
 </div>
 
@@ -8779,7 +9006,13 @@ If the element will have no children, call it anyways.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>overlay  .addDiv()    .addHeader(1).buildElement() // Breaks out of the &lt;h1>    .addP().buildElement() // Breaks out of the &lt;p>  .buildElement() // Breaks out of the &lt;div>  .addHr() // Since there are no more elements, calling buildElement() is optional.buildOverlay(document.body);</code></pre>
+    <pre class="prettyprint"><code>overlay
+  .addDiv()
+    .addHeader(1).buildElement() // Breaks out of the &lt;h1>
+    .addP().buildElement() // Breaks out of the &lt;p>
+  .buildElement() // Breaks out of the &lt;div>
+  .addHr() // Since there are no more elements, calling buildElement() is optional
+.buildOverlay(document.body);</code></pre>
 
 </div>
 
@@ -8925,7 +9158,12 @@ Call this when you are done chaining methods.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>overlay  .addDiv()    .addP().buildElement()  .buildElement().buildOverlay(document.body); // Adds DOM structure to document body// &lt;div>&lt;p>&lt;/p>&lt;/div></code></pre>
+    <pre class="prettyprint"><code>overlay
+  .addDiv()
+    .addP().buildElement()
+  .buildElement()
+.buildOverlay(document.body); // Adds DOM structure to document body
+// &lt;div>&lt;p>&lt;/p>&lt;/div></code></pre>
 
 </div>
 
@@ -9510,7 +9748,7 @@ It uses <code>Template.chunked</code> to update <code>Template.coords</code></p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="Template.js.html">Template.js</a>, <a href="Template.js.html#line231">line 231</a>
+        <a href="Template.js.html">Template.js</a>, <a href="Template.js.html#line287">line 287</a>
     </li></ul></dd>
     
 
@@ -11992,7 +12230,11 @@ This method handles the rendering of template overlays on individual tiles.</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>const encode = '012abcABC'; // Base 9console.log(encodedToNumber('0', encode));     // 0console.log(encodedToNumber('c', encode));     // 5console.log(encodedToNumber('1A', encode));    // 15console.log(encodedToNumber('1BCaA', encode)); // 12345</code></pre>
+    <pre class="prettyprint"><code>const encode = '012abcABC'; // Base 9
+console.log(encodedToNumber('0', encode));     // 0
+console.log(encodedToNumber('c', encode));     // 5
+console.log(encodedToNumber('1A', encode));    // 15
+console.log(encodedToNumber('1BCaA', encode)); // 12345</code></pre>
 
 </div>
 
@@ -12164,7 +12406,14 @@ This is handy when you are displaying user-made data, and you <em>must</em> use 
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>const paragraph = document.createElement('p');paragraph.innerHTML = escapeHTML('&lt;u>Foobar.&lt;/u>');// Output:// (Does not include the paragraph element)// (Output is not HTML formatted)&lt;p>  "&lt;u>Foobar.&lt;/u>"&lt;/p></code></pre>
+    <pre class="prettyprint"><code>const paragraph = document.createElement('p');
+paragraph.innerHTML = escapeHTML('&lt;u>Foobar.&lt;/u>');
+// Output:
+// (Does not include the paragraph element)
+// (Output is not HTML formatted)
+&lt;p>
+  "&lt;u>Foobar.&lt;/u>"
+&lt;/p></code></pre>
 
 </div>
 
@@ -14631,7 +14880,11 @@ This code will execute outside of TamperMonkey's sandbox</p>
 <div class="section-examples">
 <h5>Example</h5>
 
-    <pre class="prettyprint"><code>const encode = '012abcABC'; // Base 9console.log(numberToEncoded(0, encode)); // 0console.log(numberToEncoded(5, encode)); // cconsole.log(numberToEncoded(15, encode)); // 1Aconsole.log(numberToEncoded(12345, encode)); // 1BCaA</code></pre>
+    <pre class="prettyprint"><code>const encode = '012abcABC'; // Base 9
+console.log(numberToEncoded(0, encode)); // 0
+console.log(numberToEncoded(5, encode)); // c
+console.log(numberToEncoded(15, encode)); // 1A
+console.log(numberToEncoded(12345, encode)); // 1BCaA</code></pre>
 
 </div>
 
@@ -15676,7 +15929,7 @@ Octothorpe not included.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="templateManager.js.html">templateManager.js</a>, <a href="templateManager.js.html#line753">line 753</a>
+        <a href="templateManager.js.html">templateManager.js</a>, <a href="templateManager.js.html#line755">line 755</a>
     </li></ul></dd>
     
 
@@ -17054,7 +17307,7 @@ If the element is an <code>input</code>, it will modify the value attribute inst
 <br class="clear">
 
 <footer>
-    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Mar 07 2026 16:05:59 GMT+0800 (中国标准时间) using the Minami theme.
+    Generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Mar 07 2026 08:16:03 GMT+0000 (Coordinated Universal Time) using the Minami theme.
 </footer>
 
 <script>prettyPrint();</script>
