@@ -4,7 +4,7 @@
 
 该项目最初是为了弥补填涂工具的检测算法准确性而设计的，现在填涂工具经过多轮更新，已不再需要搭配该魔改版本的blue marble，使用该blue marble，反而容易导致错判。
 
-如果你使用[wplace_canYouHelpMe](https://github.com/Nooko331/wplace_canYouHelpMe)，不建议使用该工具，而是使用原版blue marble。
+如果你使用[wplace_canYouHelpMe](https://github.com/Nooko331/wplace_canYouHelpMe)，不建议搭配该版本blue marble，而是使用原版blue marble。
 
 ## 这是什么？
 
